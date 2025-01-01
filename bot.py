@@ -9,9 +9,14 @@ import time
 URL = "https://recreation.utoronto.ca/booking"
 USERNAME = ""  # Replace with your UTORid
 PASSWORD = ""  # Replace with your password
-BOOKING_TIME = "7:45 - 8:30 PM"  # Replace with desired time
+BOOKING_TIME = "12:15 - 1 PM"  # Replace with desired time
 SPORT_NAME = "S&R American Squash Crts"  # Sport to book
+
 REFRESH_INTERVAL = 0  # Time (in seconds) between page refreshes
+COURT_LOOP = False  # Set to True to loop through all courts
+CHOSEN_COURT = "Court 5-AC-Squash"  # Court to book if COURT_LOOP is False 
+
+# Be sure to download the appropriate chromedriver for your version of Chrome
 CHROMEDRIVER_PATH = "chromedriver.exe"
 
 # Initialize WebDriver
@@ -99,15 +104,23 @@ try:
 
 			for court in courts:
 				court_name = court.text.strip()
+
+				# Skip courts that are not the chosen court
+				if not COURT_LOOP and court_name != CHOSEN_COURT:
+					# print(f"Skipping {court_name}...")
+					continue
+
 				# print(f"Checking slots for {court_name}...")
 				court.click()
-				time.sleep(1)  # Allow time for the page to update
+				time.sleep(0.2)  # Allow time for the page to update
 
 				# Check booking slots for the selected court
 				booking_slots = driver.find_elements(By.CLASS_NAME, "booking-slot-item")
 				for slot in booking_slots:
-					slot_text = slot.find_element(By.TAG_NAME, "p").text.strip()  # Extract time
+					# slot_text = slot.find_element(By.TAG_NAME, "p").text.strip()  # Extract time
+					slot_text = slot.find_element(By.TAG_NAME, "strong").text.strip()  # Extract only the time
 					if slot_text == BOOKING_TIME:
+						print("Booking time found")
 						# Check if the booking is available and not disabled or future
 						try:
 							button = slot.find_element(By.TAG_NAME, "button")
@@ -129,6 +142,10 @@ try:
 				if any("Opens at" in slot.text for slot in booking_slots):
 					# print(f"Slots for {court_name} haven't opened yet.")
 					pass
+
+				# Check Court Loop flag
+				if not COURT_LOOP:
+					break
 
 			# print("Finished checking all courts. Retrying in a few seconds...")
 			time.sleep(REFRESH_INTERVAL)
