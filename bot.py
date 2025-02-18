@@ -14,15 +14,15 @@ from selenium.common.exceptions import NoSuchElementException
 # ------------------------------------------------------------------------------
 URL = "https://recreation.utoronto.ca/booking"
 
-USERNAME = "your_utorid"             # 你的 UTORid
-PASSWORD = "your_password"           # 密码
+USERNAME = os.environ.get("UTORID")    # 你的 UTORid
+PASSWORD = os.environ.get("PASSWORD")  # 密码
 SPORT_NAME = "S&R Badminton"         # 要预订的运动名称
 BOOKING_TIME = "7 - 7:55 PM"         # 目标时段
 CHOSEN_COURT = "Court 01-AC-Badminton"  # 当不遍历所有球场时，指定球场名称
 COURT_LOOP = True                    # True=遍历所有球场; False=只预订指定球场
 REFRESH_INTERVAL = 10               # 刷新间隔（秒），根据需要调整
 
-CHROMEDRIVER_PATH = "/path/to/chromedriver"  # 你的 ChromeDriver 路径
+CHROMEDRIVER_PATH = ""  # 你的 ChromeDriver 路径
 # ------------------------------------------------------------------------------
 
 
